@@ -16,7 +16,7 @@ public class Model {
 		return dao.loadAllBeB();
 	}
 
-	public List<String> getCommuniProvincia(String sigla) {
+	public List<Comune> getCommuniProvincia(String sigla) {
 		return dao.getCommuniProvincia(sigla);
 	}
 }
