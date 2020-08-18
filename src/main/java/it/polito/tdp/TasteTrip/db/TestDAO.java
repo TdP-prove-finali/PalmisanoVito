@@ -1,9 +1,11 @@
 package it.polito.tdp.TasteTrip.db;
 
 import java.sql.Connection;
+import java.util.List;
 
 import it.polito.tdp.TasteTrip.db.DBConnect;
 import it.polito.tdp.TasteTrip.db.TasteTripDAO;
+import it.polito.tdp.TasteTrip.model.Comune;
 
 public class TestDAO {
 
@@ -20,8 +22,13 @@ public class TestDAO {
 
 		TasteTripDAO dao = new TasteTripDAO();
 
-		for(String s : dao.loadAllBeB())
-			System.out.println(s);
+//		for(String s : dao.loadAllBeB())
+//			System.out.println(s);
+		
+		List<Comune> comuni = dao.getCommuniProvincia("BR");
+		for(Comune c : comuni) {
+			System.out.println(c.getNome()+" "+c.getCap());
+		}
 		
 	}
 

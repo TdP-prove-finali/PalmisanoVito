@@ -15,7 +15,7 @@ public class TasteTripDAO {
 
 	public List<String> loadAllBeB() {
 
-		String sql = "SELECT name FROM puglia";
+		String sql = "SELECT name FROM beb";
 		List<String> beb = new ArrayList<>();
 
 		try {
@@ -49,10 +49,19 @@ public class TasteTripDAO {
 			ResultSet res = st.executeQuery();
 
 			while (res.next()) {
-				String nome = res.getString("nomeProvincia");
-				nome = nome.substring(0, nome.length()-5);
-				Comune c = new Comune(nome, sigla, res.getInt("cap"));
-				comuni.add(c);
+				boolean esistente = false;
+				for(Comune c : comuni) {
+					if( (c.getNome()+" ("+sigla+")" ).equals(res.getString("nomeProvincia"))) {
+						c.addCap(res.getInt("cap"));
+						esistente = true;
+					}
+				}
+				if(!esistente) {
+					String nome = res.getString("nomeProvincia");
+					nome = nome.substring(0, nome.length()-5); // elimino la parte finale del nome di ogni comune presente nel DB, avente forma " (XX)"
+					Comune c = new Comune(nome, sigla, res.getInt("cap"));
+					comuni.add(c);
+				}
 			}
 
 			conn.close();

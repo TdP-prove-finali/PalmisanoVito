@@ -1,15 +1,19 @@
 package it.polito.tdp.TasteTrip.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Comune {
 	
 	private String nome;
 	private String provincia;
-	private int cap;
+	private List<Integer> listaCap;
 	
 	public Comune(String nome, String provincia, int cap) {
 		this.nome = nome;
 		this.provincia = provincia;
-		this.cap = cap;
+		listaCap = new ArrayList<Integer>();
+		listaCap.add(cap);
 	}
 	
 	public String getNome() {
@@ -20,8 +24,12 @@ public class Comune {
 		return provincia;
 	}
 
-	public int getCap() {
-		return cap;
+	public List<Integer> getCap() {
+		return listaCap;
+	}
+	
+	public void addCap(int cap) {
+		listaCap.add(cap);
 	}
 
 	public String toString() {
