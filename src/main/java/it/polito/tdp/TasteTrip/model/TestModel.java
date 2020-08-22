@@ -6,9 +6,7 @@ public class TestModel {
 		
 		Model m = new Model();
 		
-		for(String s : m.getNomi()) {
-			System.out.println(s);
-		}
+		
 
 	}
 
