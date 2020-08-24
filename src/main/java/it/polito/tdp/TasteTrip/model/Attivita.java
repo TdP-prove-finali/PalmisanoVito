@@ -2,7 +2,7 @@ package it.polito.tdp.TasteTrip.model;
 
 import com.javadocmd.simplelatlng.LatLng;
 
-public class Attivita extends VerticeGrafo {
+public class Attivita {
 
 	private String nome;
 	private String tipologia;

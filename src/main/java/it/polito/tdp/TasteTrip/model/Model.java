@@ -1,6 +1,8 @@
 package it.polito.tdp.TasteTrip.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.jgrapht.Graph;
@@ -17,11 +19,11 @@ import it.polito.tdp.TasteTrip.db.TasteTripDAO;
 public class Model {
 
 	private TasteTripDAO dao;
-	private List<Attivita> attivita;
-	private Graph<VerticeGrafo, DefaultWeightedEdge> grafo;
-	private final double distMax; // Imposto una distanza massima, espressa in kilometri, per la quale due comuni non risultano collegati direttamente all'interno del grafo
+	private Graph<Comune, DefaultWeightedEdge> grafo;
+	private final int distMax; // Imposto una distanza massima, espressa in kilometri, per la quale due comuni non risultano collegati direttamente all'interno del grafo
 	private List<Comune> comuni;
-	private List<BeB> listaBeB;
+	private List<Percorso> altriPercorsi;
+	private Percorso bestPercorso;
 	
 	public Model() {
 		dao = new TasteTripDAO();
@@ -46,6 +48,7 @@ public class Model {
 	 */
 	public void addComuniBySelezioneSpecificaComune(Comune comune, int distanzaMax){
 		comuni = new ArrayList<Comune>();
+		comuni.add(comune);
 		List<Comune> tempList = dao.getAllCommuni();
 		
 		List<LatLng> coorComune = new ArrayList<LatLng>(comune.getMapCapCoordinate().values());
@@ -62,7 +65,6 @@ public class Model {
 				}
 			}
 		}
-		attivita = new ArrayList<Attivita>();
 	}
 	
 	/**
@@ -94,7 +96,6 @@ public class Model {
 				}
 			}
 		}
-		attivita = new ArrayList<Attivita>();
 	}
 	
 	// ----- Metodi per l'aggiunta dei B&B -----
@@ -105,11 +106,10 @@ public class Model {
 	 * @param numNotti
 	 * @return {@link List} dei B&B corrispondenti
 	 */
-	public void addBeBComune(int numNotti){
-		listaBeB = new ArrayList<BeB>();
+	public void addBeBComune(int numNotti, int numPersone){
 		if(numNotti!=0) {
 			for(Comune c : comuni) {
-				listaBeB.addAll(dao.getBeBComune(c, numNotti));
+				c.addListaBeB(dao.getBeBComune(c, numNotti, numPersone));
 			}
 		}
 	}
@@ -117,80 +117,35 @@ public class Model {
 	// ----- Metodo per la creazione del grafo -----
 	
 	/**
-	 * Crea un grafo semplice pesato, i cui vertici sono i comuni, le attivita ed i BeB corrispondenti alle richieste dell'utente.
-	 * Per poter inserire tutte e tre le classi all'interno di uno stesso grafo, si utilizza una classe di supporto 'VerticeGrafo', 
-	 * la quale funge da classe padre alle tre precedenti.
+	 * Crea un grafo semplice pesato, i cui vertici sono i comuni corrispondenti alla richiesta dell'utente.
 	 */
 	public void creaGrafo() {
 		
-		grafo = new SimpleWeightedGraph<VerticeGrafo, DefaultWeightedEdge>(DefaultWeightedEdge.class);
+		grafo = new SimpleWeightedGraph<Comune, DefaultWeightedEdge>(DefaultWeightedEdge.class);
 		
 		Graphs.addAllVertices(grafo, comuni);
-		Graphs.addAllVertices(grafo, listaBeB);
-		Graphs.addAllVertices(grafo, attivita);
 		
-		for(VerticeGrafo v1 : grafo.vertexSet()) {
-			if(v1 instanceof Comune) {
-				Comune c1 = (Comune) v1;
-				for(VerticeGrafo v2 : grafo.vertexSet()) {
-					if(v2 instanceof Comune) {
-						Comune c2 = (Comune) v2;
-						if(!c1.equals(c2)) {
-							if(grafo.getEdge(c1, c2) == null) {
-								for(LatLng coor1 : c1.getMapCapCoordinate().values()) {
-									for(LatLng coor2 : c2.getMapCapCoordinate().values()) {
-										Double distanza = LatLngTool.distance(coor1, coor2, LengthUnit.KILOMETER);
-										if(distanza < distMax) {
-											Graphs.addEdgeWithVertices(grafo, v1, v2, distanza);
-										}
-									}
+		for(Comune c1 : grafo.vertexSet()) {
+			for(Comune c2 : grafo.vertexSet()) {
+				if(!c1.equals(c2)) {
+					if(grafo.getEdge(c1, c2) == null) {
+						for(LatLng coor1 : c1.getMapCapCoordinate().values()) {
+							for(LatLng coor2 : c2.getMapCapCoordinate().values()) {
+								Double distanza = LatLngTool.distance(coor1, coor2, LengthUnit.KILOMETER);
+								if(distanza < distMax) {
+									Graphs.addEdgeWithVertices(grafo, c1, c2, distanza);
 								}
 							}
 						}
 					}
 				}
 			}
-		}
-		
-		for(VerticeGrafo v1 : grafo.vertexSet()) {
-			if(v1 instanceof Comune) {
-				Comune c = (Comune) v1;
-				for(VerticeGrafo v2 : grafo.vertexSet()) {
-					if(v2 instanceof BeB) {
-						BeB b = (BeB) v2;
-						if( grafo.getEdge(v1, v2) == null && b.getComune().equals(c) ) {
-							for(LatLng coor1 : c.getMapCapCoordinate().values()) {
-								LatLng coor2 = b.getCoordinate();
-								Double distanza = LatLngTool.distance(coor1, coor2, LengthUnit.KILOMETER);
-								Graphs.addEdgeWithVertices(grafo, v1, v2, distanza);
-							}
-						}
-					}
-				}
-			}
-		}
-		
-		for(VerticeGrafo v1 : grafo.vertexSet()) {
-			if(v1 instanceof Comune) {
-				Comune c = (Comune) v1;
-				for(VerticeGrafo v2 : grafo.vertexSet()) {
-					if(v2 instanceof Attivita) {
-						Attivita a = (Attivita) v2;
-						if( grafo.getEdge(c, a) == null && a.getComune().equals(c) ) {
-							for(LatLng coor1 : c.getMapCapCoordinate().values()) {
-								LatLng coor2 = a.getCoordinate();
-								Double distanza = LatLngTool.distance(coor1, coor2, LengthUnit.KILOMETER);
-								Graphs.addEdgeWithVertices(grafo, v1, v2, distanza);
-							}
-						}
-					}
-				}
-			}
+			
 		}
 		System.out.println("vertici: "+grafo.vertexSet().size()+", archi: "+grafo.edgeSet().size());
 	}
 
-	// ----- Metodi per l'aggiunta e la selezione delle attivita' -----
+	// ----- Metodi per l'aggiunta delle attivita' ai singoli comuni -----
 	
 	/**
 	 * Aggiunge alla {@link List} attivita, tutte le attivita' turistiche presenti sul territorio dei comuni idonei.
@@ -200,7 +155,7 @@ public class Model {
 	public void addAttivitaTuristicheComuni(List<String> tipologie, int numPersone) {
 		for(Comune c : comuni) {
 			for(String t : tipologie) {
-				attivita.addAll(dao.getAttivitaTuristicheComuni(c, t, numPersone));
+				c.addListaAttivita(dao.getAttivitaTuristicheComuni(c, t, numPersone));
 			}
 		}
 	}
@@ -213,7 +168,7 @@ public class Model {
 	public void addLuoghiInteresseComuni(List<String> tipologie, int numPersone) {
 		for(Comune c : comuni) {
 			for(String t : tipologie) {
-				attivita.addAll(dao.getLuoghiInteresseComuni(c, t, numPersone));
+				c.addListaAttivita(dao.getLuoghiInteresseComuni(c, t, numPersone));
 			}
 		}
 	}
@@ -224,22 +179,89 @@ public class Model {
 	 */
 	public void addStabilimentiBalneariComuni(int numPersone) {
 		for(Comune c : comuni) {
-			attivita.addAll(dao.getStabilimentiBalneariComuni(c, numPersone));
+			c.addListaAttivita(dao.getStabilimentiBalneariComuni(c, numPersone));
+		}
+	}
+	
+	// ----- Ricorsione per la ricerca del viaggio migliore per l'utente -----
+	
+	public Percorso ricorsione(double spesaMax, int numGiorni, int distanzaMax, Comune comune){
+		
+		// Impostare selezione comune: se l'utente ha scelto un comune, lo faccio soggiornare lì
+		
+		altriPercorsi = new ArrayList<Percorso>();
+		bestPercorso = new Percorso(null, 0);
+		
+		Percorso parziale = new Percorso(null, 0);
+		List<Attivita> attivita = new ArrayList<Attivita>();
+		
+		for(Comune c : grafo.vertexSet()) {
+			parziale = new Percorso(c, 0);
+			attivita.addAll(c.getListaAttivita());
+			for(Comune v : Graphs.neighborListOf(grafo, c)) {
+				attivita.addAll(v.getListaAttivita());
+			}
+		}
+		System.out.println(comune.getListaBeB().size()+" "+attivita.size());
+		
+		cerca(spesaMax, parziale, numGiorni, distanzaMax, 0, attivita, comune);
+		
+		return bestPercorso;
+	}
+	
+	private void cerca(double spesaMax, Percorso parziale, int numGiorni, int distanzaMax, int livello, List<Attivita> attivita, Comune comune) {
+		
+		if(parziale.getCosto() != 0 && parziale.getCosto()<spesaMax && parziale.getAttivita().size()==2*numGiorni) {
+			altriPercorsi.add(new Percorso(parziale));
+			if(parziale.getCosto()>bestPercorso.getCosto()) {
+				bestPercorso = new Percorso(parziale);
+			}
+			return;
+		}
+		
+		if(numGiorni>1) {
+			for(BeB b : comune.getListaBeB()) {
+				parziale.setBeb(b);
+				parziale.addCosto(parziale.getBeb().getPrezzo());
+				for(Attivita a : attivita) {
+					if(parziale.getAttivita().size()<2*numGiorni 
+							&& LatLngTool.distance(b.getCoordinate(), a.getCoordinate(), LengthUnit.KILOMETER)<distanzaMax 
+							&& !parziale.getAttivita().contains(a)) {
+						parziale.addAttivita(a);
+						parziale.addCosto(a.getPrezzo());
+						cerca(spesaMax, parziale, numGiorni, distanzaMax, livello+1, attivita, comune);
+						parziale.removeAttivita(a);
+						parziale.removeCosto(a.getPrezzo());
+					}
+				}
+				parziale.removeCosto(parziale.getBeb().getPrezzo());
+			}
+		}
+		else {
+			for(Attivita a : attivita) {
+				if(parziale.getAttivita().size()<2*numGiorni 
+						&& !parziale.getAttivita().contains(a)
+						/*&& LatLngTool.distance(b.getCoordinate(), a.getCoordinate(), LengthUnit.KILOMETER)<distanzaMax*/ ) { 
+					// risolvere caso in cui si faccia tutto in un giorno: (distanza fra due qualsiasi attivita) < distanzaMax
+					parziale.addAttivita(a);
+					parziale.addCosto(a.getPrezzo());
+					cerca(spesaMax, parziale, numGiorni, distanzaMax, livello+1, attivita, comune);
+					parziale.removeAttivita(a);
+					parziale.removeCosto(a.getPrezzo());
+				}
+			}
 		}
 	}
 
-	public List<Attivita> getAttivita() {
-		return attivita;
-	}
-	
-	// ----- Ricorsione -----
-	
-	public List<VerticeGrafo> ricorsione(double spesaMax){
-		
-		return null;
-	}
-	
-	private void cerca() {
-		
+	public List<Percorso> getAltriPercorsi() {
+		Collections.sort(altriPercorsi, new Comparator<Percorso>() {
+			public int compare(Percorso p1, Percorso p2) {
+				if (p1.getCosto() > p2.getCosto()) return -1;
+		        if (p1.getCosto() < p2.getCosto()) return 1;
+		        return 0;
+			}
+		});
+		altriPercorsi.remove(bestPercorso);
+		return altriPercorsi;
 	}
 }

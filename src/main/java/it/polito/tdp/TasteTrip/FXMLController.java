@@ -1,7 +1,6 @@
 package it.polito.tdp.TasteTrip;
 
 import java.net.URL;
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
@@ -10,6 +9,7 @@ import java.util.ResourceBundle;
 
 import it.polito.tdp.TasteTrip.model.Comune;
 import it.polito.tdp.TasteTrip.model.Model;
+import it.polito.tdp.TasteTrip.model.Percorso;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -158,7 +158,7 @@ public class FXMLController {
 	    		return;
 	    	}
 	    	
-	    	if(ritorno.compareTo(andata) < 0) { // Posso decidere di fare un viaggio di un solo giorno
+	    	if(ritorno.compareTo(andata) < 0) { // Potrei decidere di fare un viaggio di un solo giorno, quindi avrei andata=ritorno
 	    		txtResult.setText("Il ritorno dev'essere uguale o seguente all'andata.");
 	    		return;
 	    	}
@@ -229,7 +229,7 @@ public class FXMLController {
 	    	
 	    	// ----- Seleziono i B&B idonei -----
 	    	
-	    	model.addBeBComune(Period.between(andata, ritorno).getDays());
+	    	model.addBeBComune(Period.between(andata, ritorno).getDays(), numPersone);
 	    	
 	    	// ----- Raccolgo le scelte effettuate sulle attivita' -----
 	    	
@@ -238,7 +238,7 @@ public class FXMLController {
 	    	
 	    	if(ckCitta.isSelected()) {
 	    		tipologieLuoghiInteresse.add(ckCitta.getText());
-	    		tipologieAttivitaTuristiche.add(ckNatura.getText());
+	    		tipologieAttivitaTuristiche.add(ckCitta.getText());
 	    	}
 	    	if(ckFormazione.isSelected()) {
 	    		tipologieAttivitaTuristiche.add(ckFormazione.getText());
@@ -280,8 +280,19 @@ public class FXMLController {
 	    	// ----- Creo il grafo -----
 	    	
 	    	model.creaGrafo();
-	    	model.ricorsione(spesaMax);
 	    	
+	    	// ----- Cerco il viaggio più confortevole e 'lussuoso', rispettando i vincoli dell'utente -----
+	    	
+	    	Percorso bestPercorso = model.ricorsione(spesaMax, Period.between(andata, ritorno).getDays()+1, distanzaMax);
+	    	
+	    	txtResult.setText("Il viaggio piu' confortevole e lussuoso che rispetta le caratteristiche volute e':\n"+bestPercorso+"\n\nDi seguito vengono elencati i 10 percorsi migliori subito dopo quello già riportato:");
+	    	int i = 1;
+	    	for(Percorso p : model.getAltriPercorsi()) {
+	    		if(i<=10) {
+	    			txtResult.appendText("\n\n"+i+") "+p);
+	    			i++;
+	    		}
+	    	}
 	    }
 	    
 	    @FXML

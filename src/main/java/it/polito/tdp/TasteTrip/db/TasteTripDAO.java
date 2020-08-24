@@ -5,9 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 import com.javadocmd.simplelatlng.LatLng;
 
@@ -87,7 +85,7 @@ public class TasteTripDAO {
 	
 	// ----- Metodi per la selezione dei B&B -----
 	
-	public List<BeB> getBeBComune(Comune comune, int numNotti) {
+	public List<BeB> getBeBComune(Comune comune, int numNotti, int numPersone) {
 
 		String sql = "SELECT `name`, host_name, neighbourhood, room_type, latitude, longitude, price FROM beb WHERE minimum_nights<=? AND neighbourhood=?";
 		List<BeB> listaBeb = new ArrayList<>();
@@ -100,7 +98,7 @@ public class TasteTripDAO {
 			ResultSet res = st.executeQuery();
 
 			while (res.next()) {
-				listaBeb.add(new BeB(res.getString("name"), res.getString("host_name"), comune, res.getString("name"), new LatLng( res.getDouble("latitude"), res.getDouble("longitude") ), res.getDouble("price")));
+				listaBeb.add(new BeB(res.getString("name"), res.getString("host_name"), comune, res.getString("name"), new LatLng( res.getDouble("latitude"), res.getDouble("longitude") ), res.getDouble("price")*numPersone));
 			}
 
 			conn.close();
