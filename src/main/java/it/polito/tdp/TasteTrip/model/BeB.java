@@ -100,7 +100,7 @@ public class BeB {
 
 	@Override
 	public String toString() {
-		return "Fatti ospitare da " +  host + " nel B&B \"" + nome + "\" situato in " + comune + ".\nTipologia di camera: " + tipoCamera + "\nPrezzo: " + prezzo + ".";
+		return "Fatti ospitare da " +  host + " nel B&B \"" + nome + "\" situato in " + comune + ".\nTipologia di camera: " + tipoCamera + "\nPrezzo: " + String.format("%.2f €", prezzo);
 	}
 	
 	

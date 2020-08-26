@@ -98,7 +98,7 @@ public class TasteTripDAO {
 			ResultSet res = st.executeQuery();
 
 			while (res.next()) {
-				listaBeb.add(new BeB(res.getString("name"), res.getString("host_name"), comune, res.getString("name"), new LatLng( res.getDouble("latitude"), res.getDouble("longitude") ), res.getDouble("price")*numPersone));
+				listaBeb.add(new BeB(res.getString("name"), res.getString("host_name"), comune, res.getString("room_type"), new LatLng( res.getDouble("latitude"), res.getDouble("longitude") ), res.getDouble("price")*numPersone));
 			}
 
 			conn.close();

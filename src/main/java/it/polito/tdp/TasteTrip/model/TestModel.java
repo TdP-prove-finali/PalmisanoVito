@@ -1,7 +1,5 @@
 package it.polito.tdp.TasteTrip.model;
 
-import java.time.LocalDate;
-import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,19 +9,25 @@ public class TestModel {
 		
 		Model model = new Model();
     	
-		int numPersone = 1;
-		int distanzaMax = 20;
-		int spesaMax = 100;
+		int numPersone = 2;
+		int distanzaMax = 10;
+		double spesaMax = 300;
 		int numGiorni = 2;
 		
     	// ----- Seleziono i comuni in base alle scelte dell'utente -----
     	List<Comune> comuni = model.getCommuniByProvincia("BR");
-//    	model.addComuniBySelezioneProvincia("LE", distanzaMax);
-    	model.addComuniBySelezioneSpecificaComune(comuni.get(4), distanzaMax);
+    	
+    	Comune c = comuni.get(comuni.size()-1);
+//    	Comune c = null;
+    	
+    	model.setVariabiliUtente(numGiorni, numPersone, spesaMax, distanzaMax);
+    	
+//    	model.addComuniBySelezioneProvincia("BA");
+    	model.addComuniBySelezioneSpecificaComune(c);
     	
     	// ----- Seleziono i B&B idonei -----
     	
-    	model.addBeBComune(numGiorni-1, numPersone);
+    	model.addBeBComune();
     	
     	// ----- Raccolgo le scelte effettuate sulle attivita' -----
     	
@@ -40,26 +44,37 @@ public class TestModel {
     	
     	// ----- Richiamo i metodi del model per aggiungere le attivita' selezionate -----
     	
-    	model.addAttivitaTuristicheComuni(tipologieAttivitaTuristiche, numPersone);
-    	model.addLuoghiInteresseComuni(tipologieLuoghiInteresse, numPersone);
+    	model.addAttivitaTuristicheComuni(tipologieAttivitaTuristiche);
+    	model.addLuoghiInteresseComuni(tipologieLuoghiInteresse);
+    	model.addStabilimentiBalneariComuni();
     	
     	// ----- Creo il grafo -----
     	
-    	model.creaGrafo();
+//    	model.creaGrafo();
     	
     	// ----- Cerco il viaggio più confortevole e 'lussuoso', rispettando i vincoli dell'utente -----
     	
-    	Percorso bestPercorso = model.ricorsione(spesaMax, numGiorni, distanzaMax, comuni.get(4));
+    	Percorso bestPercorso = model.ricorsione(c);
     	
-    	System.out.print("Il viaggio piu' confortevole e lussuoso che rispetta le caratteristiche volute e':\n"+bestPercorso+"\n\nDi seguito vengono elencati i 10 percorsi migliori subito dopo quello già riportato:");
-    	int i = 1;
-    	for(Percorso p : model.getAltriPercorsi()) {
-    		if(i<=10) {
-    			System.out.print("\n\n"+i+") "+p);
-    			i++;
-    		}
+    	if( !bestPercorso.getAttivita().isEmpty() ) {
+    		System.out.print("Il viaggio piu' confortevole e lussuoso che rispetta le caratteristiche volute e':\n\n");
     	}
-
+    	System.out.print(bestPercorso);
+    	if(!model.getAltriPercorsi().isEmpty()) {
+	    	if(model.getAltriPercorsi().size()<10) {
+	    		System.out.print("\n\nDi seguito vengono elencati i "+model.getAltriPercorsi().size()+" percorsi migliori subito dopo quello già riportato:");
+	    	}
+	    	else {
+	    		System.out.print("\n\nDi seguito vengono elencati i 10 percorsi migliori subito dopo quello già riportato:");
+	    	}
+    		int i = 1;
+	    	for(Percorso p : model.getAltriPercorsi()) {
+	    		if(i<=10) {
+	    			System.out.print("\n\n"+i+") "+p);
+	    			i++;
+	    		}
+	    	}
+    	}
 	}
 
 }

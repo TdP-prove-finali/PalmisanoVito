@@ -11,6 +11,7 @@ public class Attivita {
 	private int cap;
 	private LatLng coordinate;
 	private double prezzo;
+	private int ordine;
 	
 	public Attivita(String nome, String tipologia, Comune comune, String indirizzo, int cap, LatLng coordinate, double prezzo) {
 		this.nome = nome;
@@ -20,6 +21,7 @@ public class Attivita {
 		this.cap = cap;
 		this.coordinate = coordinate;
 		this.prezzo = prezzo;
+		ordine = -1;
 	}
 
 	public String getNome() {
@@ -50,6 +52,14 @@ public class Attivita {
 		return prezzo;
 	}
 	
+	public int getOrdine() {
+		return ordine;
+	}
+
+	public void setOrdine(int ordine) {
+		this.ordine = ordine;
+	}
+
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
@@ -106,7 +116,7 @@ public class Attivita {
 	}
 
 	public String toString() {
-		return nome+", "+tipologia+", "+comune+" "+cap+" "+prezzo;
+		return nome + ", " + tipologia + ", " + comune + ", costo: " + String.format("%.2f €", prezzo);
 	}
 	
 	

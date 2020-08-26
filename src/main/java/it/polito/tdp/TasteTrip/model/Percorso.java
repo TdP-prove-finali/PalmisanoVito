@@ -9,10 +9,12 @@ public class Percorso {
 	private BeB beb;
 	private List<Attivita> attivita;
 	private double costo;
+	private int numGiorni;
 	
-	public Percorso(Comune comune, double costo) {
+	public Percorso(Comune comune, double costo, int numGiorni) {
 		this.comune = comune;
 		this.costo = costo;
+		this.numGiorni = numGiorni;
 		attivita = new ArrayList<Attivita>();
 		beb = null;
 	}
@@ -22,6 +24,7 @@ public class Percorso {
 		this.beb = p.getBeb();
 		this.attivita = new ArrayList<Attivita>(p.getAttivita());
 		this.costo = p.getCosto();
+		this.numGiorni = p.getNumGiorni();
 	}
 
 	public Comune getComune() {
@@ -68,15 +71,25 @@ public class Percorso {
 		this.costo -= costo;
 	}
 
+	public int getNumGiorni() {
+		return numGiorni;
+	}
+
+	public void setNumGiorni(int numGiorni) {
+		this.numGiorni = numGiorni;
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((attivita == null) ? 0 : attivita.hashCode());
 		result = prime * result + ((beb == null) ? 0 : beb.hashCode());
+		result = prime * result + ((comune == null) ? 0 : comune.hashCode());
 		long temp;
 		temp = Double.doubleToLongBits(costo);
 		result = prime * result + (int) (temp ^ (temp >>> 32));
+		result = prime * result + numGiorni;
 		return result;
 	}
 
@@ -99,7 +112,14 @@ public class Percorso {
 				return false;
 		} else if (!beb.equals(other.beb))
 			return false;
+		if (comune == null) {
+			if (other.comune != null)
+				return false;
+		} else if (!comune.equals(other.comune))
+			return false;
 		if (Double.doubleToLongBits(costo) != Double.doubleToLongBits(other.costo))
+			return false;
+		if (numGiorni != other.numGiorni)
 			return false;
 		return true;
 	}
@@ -107,11 +127,23 @@ public class Percorso {
 	@Override
 	public String toString() {
 		String s = "";
-		if(beb != null) {
-			s = "Soggiorna nella magnifica cittadina di "+ comune + ".\n" + beb + "\nSul territorio potrai eseguire le seguenti attivita: ";
+		if(numGiorni<=1) {
+			s = "Visita i luighi del territorio in cui e' collocata la magnifica cittadina di "+ comune
+					+ ".\nNessun B&B selezionato, data la durata del viaggio di un solo giorno."
+					+ "\nSul territorio potrai eseguire le seguenti attivita: ";
+		}
+		else if(comune != null && comune.getListaBeB().isEmpty() && numGiorni>1) {
+			s = "Purtroppo non e' stato trovato nessun B&B sul territorio del comune selezionato.";
+		}
+		else if(comune != null && !comune.getListaBeB().isEmpty() && beb == null && attivita.isEmpty()) {
+			s = "Purtroppo, per il periodo, la spesa massima e la distanza massima scelti, non e' possibile trovare nessun itinerario di viaggio.";
+		}
+		else if(beb == null && comune == null) { // Caso in cui scelgo la provincia, ma non il comune
+			s = "Sull'ampio territorio da te selezionato, potrai eseguire le seguenti fantastiche attivita: ";
 		}
 		else {
-			s = "Soggiorna nella magnifica cittadina di "+ comune + ".\nNessun B&B selezionato, data la durata del viaggio di un solo giorno.\nSul territorio potrai eseguire le seguenti attivita: ";
+			s = "Soggiorna nella magnifica cittadina di "+ comune 
+					+ ".\n" + beb + "\nSul territorio potrai eseguire le seguenti attivita: ";
 		}
 		for(Attivita a : attivita) {
 			s += "\n"+a;

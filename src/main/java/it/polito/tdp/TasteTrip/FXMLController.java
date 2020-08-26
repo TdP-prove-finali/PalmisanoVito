@@ -153,15 +153,17 @@ public class FXMLController {
 	    	LocalDate andata = dpkAndata.getValue();
 	    	LocalDate ritorno = dpkRitorno.getValue();
 	    	
-	    	if(andata.compareTo(LocalDate.now()) <= 0) { // Imposto arbitrariamente che non sia possibile cercare un viaggio nello stesso giorno in cui si effettua la ricerca
+	    	if(andata.isBefore(LocalDate.now()) || andata.equals(LocalDate.now())) { // Imposto arbitrariamente che non sia possibile cercare un viaggio nello stesso giorno in cui si effettua la ricerca
 	    		txtResult.setText("Le date selezionate devono essere successive al giorno odierno.");
 	    		return;
 	    	}
 	    	
-	    	if(ritorno.compareTo(andata) < 0) { // Potrei decidere di fare un viaggio di un solo giorno, quindi avrei andata=ritorno
+	    	if(ritorno.isBefore(andata)) { // Potrei decidere di fare un viaggio di un solo giorno, quindi avrei andata=ritorno
 	    		txtResult.setText("Il ritorno dev'essere uguale o seguente all'andata.");
 	    		return;
 	    	}
+	    	
+	    	int numGiorni = Period.between(andata, ritorno).getDays()+1;
 	    	
 	    	int numPersone;
 	    	double spesaMax;
@@ -195,6 +197,10 @@ public class FXMLController {
 				return;
 			}
 	    	
+	    	// ----- Setto nel model le variabili inserite dall'utente -----
+	    	
+	    	model.setVariabiliUtente(numGiorni, numPersone, spesaMax, distanzaMax);
+	    	
 	    	// ----- Seleziono i comuni in base alle scelte dell'utente -----
 	    	
 	    	if(cmbComune.getValue()==null) {
@@ -221,15 +227,15 @@ public class FXMLController {
 	    		default:
 	    			sigla = "";
 	    		}
-	    		model.addComuniBySelezioneProvincia(sigla, distanzaMax);
+	    		model.addComuniBySelezioneProvincia(sigla);
 	    	}
 	    	else {
-	    		model.addComuniBySelezioneSpecificaComune(cmbComune.getValue(), distanzaMax);
+	    		model.addComuniBySelezioneSpecificaComune(cmbComune.getValue());
 	    	}
 	    	
 	    	// ----- Seleziono i B&B idonei -----
 	    	
-	    	model.addBeBComune(Period.between(andata, ritorno).getDays(), numPersone);
+	    	model.addBeBComune();
 	    	
 	    	// ----- Raccolgo le scelte effettuate sulle attivita' -----
 	    	
@@ -267,31 +273,51 @@ public class FXMLController {
 	    	// ----- Richiamo i metodi del model per aggiungere le attivita' selezionate -----
 	    	
 	    	if(ckLido.isSelected()) {
-	    		model.addStabilimentiBalneariComuni(numPersone);
+	    		if( ( andata.isAfter(LocalDate.of(andata.getYear(), 4, 30)) 
+	    				&& andata.isBefore(LocalDate.of(andata.getYear(), 9, 30)) ) 
+	    				|| ( ritorno.isBefore(LocalDate.of(ritorno.getYear(), 9, 30)) 
+	    				&& ritorno.isAfter(LocalDate.of(ritorno.getYear(), 4, 30)) ) ) {
+	    			model.addStabilimentiBalneariComuni();
+	    		}
+	    		else {
+	    			txtResult.setText("Non e' possibile selezionare la voce 'Stabilimenti balneari' se non si rientra nel periodo 01/05 - 30/09");
+	    			return;
+	    		}
 	    	}
 	    	
 	    	if(!tipologieAttivitaTuristiche.isEmpty()) {
-	    		model.addAttivitaTuristicheComuni(tipologieAttivitaTuristiche, numPersone);
+	    		model.addAttivitaTuristicheComuni(tipologieAttivitaTuristiche);
 	    	}
 	    	if(!tipologieLuoghiInteresse.isEmpty()) {
-	    		model.addLuoghiInteresseComuni(tipologieLuoghiInteresse, numPersone);
+	    		model.addLuoghiInteresseComuni(tipologieLuoghiInteresse);
 	    	}
 	    	
 	    	// ----- Creo il grafo -----
 	    	
-	    	model.creaGrafo();
+//	    	model.creaGrafo();
 	    	
 	    	// ----- Cerco il viaggio più confortevole e 'lussuoso', rispettando i vincoli dell'utente -----
 	    	
-	    	Percorso bestPercorso = model.ricorsione(spesaMax, Period.between(andata, ritorno).getDays()+1, distanzaMax);
+	    	Percorso bestPercorso = model.ricorsione(cmbComune.getValue());
 	    	
-	    	txtResult.setText("Il viaggio piu' confortevole e lussuoso che rispetta le caratteristiche volute e':\n"+bestPercorso+"\n\nDi seguito vengono elencati i 10 percorsi migliori subito dopo quello già riportato:");
-	    	int i = 1;
-	    	for(Percorso p : model.getAltriPercorsi()) {
-	    		if(i<=10) {
-	    			txtResult.appendText("\n\n"+i+") "+p);
-	    			i++;
-	    		}
+	    	if( !bestPercorso.getAttivita().isEmpty() ) {
+	    		txtResult.setText("Il viaggio piu' confortevole e lussuoso che rispetta le caratteristiche volute e':\n\n");
+	    	}
+	    	txtResult.appendText(bestPercorso.toString());
+	    	if(!model.getAltriPercorsi().isEmpty()) {
+		    	if(model.getAltriPercorsi().size()<10) {
+		    		txtResult.appendText("\n\nDi seguito vengono elencati i "+model.getAltriPercorsi().size()+" percorsi migliori subito dopo quello già riportato:");
+		    	}
+		    	else {
+		    		txtResult.appendText("\n\nDi seguito vengono elencati i 10 percorsi migliori subito dopo quello già riportato:");
+		    	}
+	    		int i = 1;
+		    	for(Percorso p : model.getAltriPercorsi()) {
+		    		if(i<=10) {
+		    			txtResult.appendText("\n\n"+i+") "+p);
+		    			i++;
+		    		}
+		    	}
 	    	}
 	    }
 	    
