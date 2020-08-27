@@ -127,23 +127,23 @@ public class Percorso {
 	@Override
 	public String toString() {
 		String s = "";
-		if(numGiorni<=1) {
+		if(numGiorni<=1 && comune != null) {
 			s = "Visita i luighi del territorio in cui e' collocata la magnifica cittadina di "+ comune
 					+ ".\nNessun B&B selezionato, data la durata del viaggio di un solo giorno."
-					+ "\nSul territorio potrai eseguire le seguenti attivita: ";
+					+ "\nSul territorio potrai eseguire le seguenti attivita': ";
 		}
 		else if(comune != null && comune.getListaBeB().isEmpty() && numGiorni>1) {
 			s = "Purtroppo non e' stato trovato nessun B&B sul territorio del comune selezionato.";
 		}
 		else if(comune != null && !comune.getListaBeB().isEmpty() && beb == null && attivita.isEmpty()) {
-			s = "Purtroppo, per il periodo, la spesa massima e la distanza massima scelti, non e' possibile trovare nessun itinerario di viaggio.";
+			s = "Purtroppo, con le scelte effettuate, non e' possibile trovare nessun itinerario di viaggio.";
 		}
 		else if(beb == null && comune == null) { // Caso in cui scelgo la provincia, ma non il comune
-			s = "Sull'ampio territorio da te selezionato, potrai eseguire le seguenti fantastiche attivita: ";
+			s = "Sull'ampio territorio da te selezionato, potrai eseguire le seguenti fantastiche attivita': ";
 		}
 		else {
 			s = "Soggiorna nella magnifica cittadina di "+ comune 
-					+ ".\n" + beb + "\nSul territorio potrai eseguire le seguenti attivita: ";
+					+ ".\n" + beb + "\nSul territorio potrai eseguire le seguenti attivita': ";
 		}
 		for(Attivita a : attivita) {
 			s += "\n"+a;

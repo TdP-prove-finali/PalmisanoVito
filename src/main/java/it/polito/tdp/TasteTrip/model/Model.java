@@ -212,21 +212,10 @@ public class Model {
 			i++;
 		}
 		
-		for(Attivita a : attivita) {
-			System.out.println(a);
-		}
-		
-		System.out.println(attivita.size());
-		
 		if(numGiorni>1) {
 			if(comune != null) {
 				for(BeB b : comune.getListaBeB()) {
 					if( b.getPrezzo() <= spesaMax ) {
-						System.out.println(b);
-						for(Attivita a : attivita) {
-							System.err.println(a+"\n"+LatLngTool.distance(b.getCoordinate(), a.getCoordinate(), LengthUnit.KILOMETER));
-						}
-						System.out.println("\n");
 						parziale.setBeb(b);
 						parziale.addCosto(parziale.getBeb().getPrezzo());
 						cerca(b, parziale, attivita, comune, tipoAttivita);
@@ -257,9 +246,7 @@ public class Model {
 	}
 	
 	private void cerca(BeB b, Percorso parziale, List<Attivita> attivita, Comune comune, List<String> tipiRestanti) {
-		System.err.println(parziale.getAttivita().size());
 		if(parziale.getAttivita().size()==2*numGiorni) {
-			System.err.println(parziale);
 			if( parziale.getCosto() <= spesaMax && !altriPercorsi.contains(parziale) ) {
 				altriPercorsi.add(new Percorso(parziale));
 				if(parziale.getCosto() >= bestPercorso.getCosto()) {
@@ -271,14 +258,10 @@ public class Model {
 		
 		if(numGiorni>1) {
 			for(Attivita a : attivita) {
-				System.out.println("1. "+a);
 				if( (parziale.getCosto() + a.getPrezzo()) <= spesaMax ) {
-					System.out.println("2. "+a);
 					if(parziale.getAttivita().size()==0) {
-						System.err.println("zero");
 						// Verifico che la nuova attivita' non sia troppo distante dal B&B attuale
 						if(LatLngTool.distance(b.getCoordinate(), a.getCoordinate(), LengthUnit.KILOMETER)<distanzaMax) {
-							System.out.println("3. "+a);
 							parziale.addAttivita(a);
 							parziale.addCosto(a.getPrezzo());
 							List<String> restanti = new ArrayList<String>(tipiRestanti);
@@ -291,8 +274,6 @@ public class Model {
 					else if( LatLngTool.distance(b.getCoordinate(), a.getCoordinate(), LengthUnit.KILOMETER)<distanzaMax 
 							&& !parziale.getAttivita().contains(a)
 							&& parziale.getAttivita().get(parziale.getAttivita().size()-1).getOrdine() < a.getOrdine()) { // Effettuo una ricerca che escluda la possibilità di ripetere piu' volte la stessa lista
-						System.err.println("NO zero");
-						System.out.println("3. "+a);
 						if(tipiRestanti.size() != 0 && tipiRestanti.contains(a.getTipologia())) { 
 							parziale.addAttivita(a);
 							parziale.addCosto(a.getPrezzo());

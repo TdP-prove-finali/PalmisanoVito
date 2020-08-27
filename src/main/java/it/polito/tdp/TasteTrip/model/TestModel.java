@@ -11,7 +11,7 @@ public class TestModel {
     	
 		int numPersone = 2;
 		int distanzaMax = 10;
-		double spesaMax = 300;
+		double spesaMax = 100;
 		int numGiorni = 2;
 		
     	// ----- Seleziono i comuni in base alle scelte dell'utente -----
@@ -22,7 +22,7 @@ public class TestModel {
     	
     	model.setVariabiliUtente(numGiorni, numPersone, spesaMax, distanzaMax);
     	
-//    	model.addComuniBySelezioneProvincia("BA");
+//    	model.addComuniBySelezioneProvincia("BT");
     	model.addComuniBySelezioneSpecificaComune(c);
     	
     	// ----- Seleziono i B&B idonei -----
