@@ -45,17 +45,6 @@ public class TestDAO {
 		List<Attivita> ris = new ArrayList<>();
 		
 		System.out.println(ris);
-		
-		int i = 5;
-		Double d = 5.0;
-		
-		System.out.println( Math.round( ((double)i) / 2 ) );
-		
-		System.out.println(d*i/2);
-		System.out.println(d*(i/2));
-		
-		System.out.println(d*Math.round(((double)i)/2));
-		
 	}
 
 }

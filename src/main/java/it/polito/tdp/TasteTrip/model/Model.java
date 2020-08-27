@@ -61,29 +61,30 @@ public class Model {
 	 * @param distanzaMax distanza massima passata dall'utente
 	 */
 	public void addComuniBySelezioneSpecificaComune(Comune comune){
-		
 		comuni = new ArrayList<Comune>();
 		comuni.add(comune);
 		List<Comune> tempList = dao.getAllCommuni();
 		
-		List<LatLng> coorComune = new ArrayList<LatLng>(comune.getMapCapCoordinate().values());
-		
 		for(Comune c : tempList) {
+			boolean minore = false;
 			if( !c.equals(comune) && !comuni.contains(c) ) {
 				for(LatLng coor1 : c.getMapCapCoordinate().values()) {
-					for(LatLng coor2 : coorComune) {
+					for(LatLng coor2 : comune.getMapCapCoordinate().values()) {
 						Double distanza = LatLngTool.distance(coor1, coor2, LengthUnit.KILOMETER);
 						if(distanza < distanzaMax) {
-							comuni.add(c);
+							minore = true;
 						}
 					}
+				}
+				if(minore) {
+					comuni.add(c);
 				}
 			}
 		}
 	}
 	
 	/**
-	 * Aggiunge alla {@link List} comini, tutti i comuni facenti parte della provincia passata come parametro.
+	 * Aggiunge alla {@link List} comuni, tutti i comuni facenti parte della provincia passata come parametro.
 	 * @param sigla sigla della provincia selezionata
 	 * @param distanzaMax distanza massima passata dall'utente
 	 */
@@ -149,7 +150,7 @@ public class Model {
 	public void addAttivitaTuristicheComuni(List<String> tipologie) {
 		for(String t : tipologie) {
 			if(!tipoAttivita.contains(t)) {
-				tipoAttivita.addAll(tipologie);
+				tipoAttivita.add(t);
 			}
 		}
 		for(Comune c : comuni) {
@@ -167,7 +168,7 @@ public class Model {
 	public void addLuoghiInteresseComuni(List<String> tipologie) {
 		for(String t : tipologie) {
 			if(!tipoAttivita.contains(t)) {
-				tipoAttivita.addAll(tipologie);
+				tipoAttivita.add(t);
 			}
 		}
 		for(Comune c : comuni) {
@@ -205,17 +206,27 @@ public class Model {
 		for(Comune c : comuni) {
 			attivita.addAll(c.getListaAttivita());
 		}
-		
 		int i = 0;
 		for(Attivita a : attivita) {
 			a.setOrdine(i);
 			i++;
 		}
 		
+		for(Attivita a : attivita) {
+			System.out.println(a);
+		}
+		
+		System.out.println(attivita.size());
+		
 		if(numGiorni>1) {
 			if(comune != null) {
 				for(BeB b : comune.getListaBeB()) {
 					if( b.getPrezzo() <= spesaMax ) {
+						System.out.println(b);
+						for(Attivita a : attivita) {
+							System.err.println(a+"\n"+LatLngTool.distance(b.getCoordinate(), a.getCoordinate(), LengthUnit.KILOMETER));
+						}
+						System.out.println("\n");
 						parziale.setBeb(b);
 						parziale.addCosto(parziale.getBeb().getPrezzo());
 						cerca(b, parziale, attivita, comune, tipoAttivita);
@@ -246,11 +257,12 @@ public class Model {
 	}
 	
 	private void cerca(BeB b, Percorso parziale, List<Attivita> attivita, Comune comune, List<String> tipiRestanti) {
-		
+		System.err.println(parziale.getAttivita().size());
 		if(parziale.getAttivita().size()==2*numGiorni) {
-			if(parziale.getCosto()<spesaMax && !altriPercorsi.contains(parziale)) {
+			System.err.println(parziale);
+			if( parziale.getCosto() <= spesaMax && !altriPercorsi.contains(parziale) ) {
 				altriPercorsi.add(new Percorso(parziale));
-				if(parziale.getCosto()>=bestPercorso.getCosto()) {
+				if(parziale.getCosto() >= bestPercorso.getCosto()) {
 					bestPercorso = new Percorso(parziale);
 				}
 			}
@@ -259,97 +271,28 @@ public class Model {
 		
 		if(numGiorni>1) {
 			for(Attivita a : attivita) {
-				if( (parziale.getCosto() + a.getPrezzo()) >= spesaMax ) {
-					return;
-				}
-				if(parziale.getAttivita().size()==0) {
-					if(LatLngTool.distance(b.getCoordinate(), a.getCoordinate(), LengthUnit.KILOMETER)<distanzaMax) {
-						parziale.addAttivita(a);
-						parziale.addCosto(a.getPrezzo());
-						List<String> restanti = new ArrayList<String>(tipiRestanti);
-						restanti.remove(a.getTipologia());
-						cerca(b, parziale, attivita, comune, restanti);
-						parziale.removeAttivita(a);
-						parziale.removeCosto(a.getPrezzo());
-					}
-				}
-				else if( LatLngTool.distance(b.getCoordinate(), a.getCoordinate(), LengthUnit.KILOMETER)<distanzaMax 
-						&& !parziale.getAttivita().contains(a)
-						&& parziale.getAttivita().get(parziale.getAttivita().size()-1).getOrdine() < a.getOrdine()) { // Effettuo una ricerca che escluda la possibilità di ripetere piu' volte la stessa lista
-					if(tipiRestanti.size() != 0 && tipiRestanti.contains(a.getTipologia())) { 
-						parziale.addAttivita(a);
-						parziale.addCosto(a.getPrezzo());
-						List<String> restanti = new ArrayList<String>(tipiRestanti);
-						restanti.remove(a.getTipologia());
-						cerca(b, parziale, attivita, comune, restanti);
-						parziale.removeAttivita(a);
-						parziale.removeCosto(a.getPrezzo());
-					}
-					else if(tipiRestanti.size() == 0) {
-						parziale.addAttivita(a);
-						parziale.addCosto(a.getPrezzo());
-						List<String> restanti = new ArrayList<String>(tipoAttivita);
-						restanti.remove(a.getTipologia());
-						cerca(b, parziale, attivita, comune, restanti);
-						parziale.removeAttivita(a);
-						parziale.removeCosto(a.getPrezzo());
-					}
-					else {
-						boolean trovato = false;
-						List<Attivita> temp = new ArrayList<>(attivita);
-						temp.removeAll(parziale.getAttivita());
-						for(Attivita a1 : temp) {
-							if(tipiRestanti.contains(a1.getTipologia())) {
-								trovato = true;
-							}
-						}
-						if(!trovato) {
+				System.out.println("1. "+a);
+				if( (parziale.getCosto() + a.getPrezzo()) <= spesaMax ) {
+					System.out.println("2. "+a);
+					if(parziale.getAttivita().size()==0) {
+						System.err.println("zero");
+						// Verifico che la nuova attivita' non sia troppo distante dal B&B attuale
+						if(LatLngTool.distance(b.getCoordinate(), a.getCoordinate(), LengthUnit.KILOMETER)<distanzaMax) {
+							System.out.println("3. "+a);
 							parziale.addAttivita(a);
 							parziale.addCosto(a.getPrezzo());
-							List<String> restanti = new ArrayList<String>(tipoAttivita);
+							List<String> restanti = new ArrayList<String>(tipiRestanti);
 							restanti.remove(a.getTipologia());
 							cerca(b, parziale, attivita, comune, restanti);
 							parziale.removeAttivita(a);
 							parziale.removeCosto(a.getPrezzo());
 						}
 					}
-				}
-			}
-		}
-		else {
-			for(Attivita a : attivita) {
-				if( (parziale.getCosto() + a.getPrezzo()) >= spesaMax ) {
-					return;
-				}
-				if(parziale.getAttivita().size()==0) {
-					// Verifico che la nuova attivita' non sia troppo distante da una delle qualsiasi attivita' gia' inserite all'interno del percorso
-					boolean troppoDistante = false;
-					for(Attivita a2 : parziale.getAttivita()) {
-						if(LatLngTool.distance(a.getCoordinate(), a2.getCoordinate(), LengthUnit.KILOMETER)>distanzaMax) {
-							troppoDistante = true;
-						}
-					}
-					if(!troppoDistante) {
-						parziale.addAttivita(a);
-						parziale.addCosto(a.getPrezzo());
-						List<String> restanti = new ArrayList<String>(tipiRestanti);
-						restanti.remove(a.getTipologia());
-						cerca(b, parziale, attivita, comune, restanti);
-						parziale.removeAttivita(a);
-						parziale.removeCosto(a.getPrezzo());
-					}
-				}
-				else if( !parziale.getAttivita().contains(a)
-						&& parziale.getAttivita().get(parziale.getAttivita().size()-1).getOrdine() < a.getOrdine()) { // Effettuo una ricerca che escluda la possibilità di ripetere piu' volte la stessa lista
-					
-					// Verifico che la nuova attivita' non sia troppo distante da una delle qualsiasi attivita' gia' inserite all'interno del percorso
-					boolean troppoDistante = false;
-					for(Attivita a2 : parziale.getAttivita()) {
-						if(LatLngTool.distance(a.getCoordinate(), a2.getCoordinate(), LengthUnit.KILOMETER)>distanzaMax) {
-							troppoDistante = true;
-						}
-					}
-					if(!troppoDistante) {
+					else if( LatLngTool.distance(b.getCoordinate(), a.getCoordinate(), LengthUnit.KILOMETER)<distanzaMax 
+							&& !parziale.getAttivita().contains(a)
+							&& parziale.getAttivita().get(parziale.getAttivita().size()-1).getOrdine() < a.getOrdine()) { // Effettuo una ricerca che escluda la possibilità di ripetere piu' volte la stessa lista
+						System.err.println("NO zero");
+						System.out.println("3. "+a);
 						if(tipiRestanti.size() != 0 && tipiRestanti.contains(a.getTipologia())) { 
 							parziale.addAttivita(a);
 							parziale.addCosto(a.getPrezzo());
@@ -373,7 +316,10 @@ public class Model {
 							List<Attivita> temp = new ArrayList<>(attivita);
 							temp.removeAll(parziale.getAttivita());
 							for(Attivita a1 : temp) {
-								if(tipiRestanti.contains(a1.getTipologia())) {
+								if(tipiRestanti.contains(a1.getTipologia()) // esiste un'attivita 'a1' che ha una tipologia che ha la priorita' rispetto alla tipologia dell'attivita attuale 'a', e che rispetta tutti i vincoli per l'entrare all'interno del percorso
+										&& LatLngTool.distance(b.getCoordinate(), a1.getCoordinate(), LengthUnit.KILOMETER)<distanzaMax
+										&& (parziale.getCosto() + a1.getPrezzo()) <= spesaMax
+										&& parziale.getAttivita().get(parziale.getAttivita().size()-1).getOrdine() < a1.getOrdine() ) {
 									trovato = true;
 								}
 							}
@@ -385,6 +331,81 @@ public class Model {
 								cerca(b, parziale, attivita, comune, restanti);
 								parziale.removeAttivita(a);
 								parziale.removeCosto(a.getPrezzo());
+							}
+						}
+					}
+				}
+			}
+		}
+		else {
+			for(Attivita a : attivita) {
+				if( (parziale.getCosto() + a.getPrezzo()) <= spesaMax ) {
+					if(parziale.getAttivita().size()==0) {
+						parziale.addAttivita(a);
+						parziale.addCosto(a.getPrezzo());
+						List<String> restanti = new ArrayList<String>(tipiRestanti);
+						restanti.remove(a.getTipologia());
+						cerca(b, parziale, attivita, comune, restanti);
+						parziale.removeAttivita(a);
+						parziale.removeCosto(a.getPrezzo());
+					}
+					else if( !parziale.getAttivita().contains(a)
+							&& parziale.getAttivita().get(parziale.getAttivita().size()-1).getOrdine() < a.getOrdine()) { // Effettuo una ricerca che escluda la possibilità di ripetere piu' volte la stessa lista
+						
+						// Verifico che la nuova attivita' non sia troppo distante da una delle qualsiasi attivita' gia' inserite all'interno del percorso
+						boolean troppoDistante = false;
+						for(Attivita a2 : parziale.getAttivita()) {
+							if(LatLngTool.distance(a.getCoordinate(), a2.getCoordinate(), LengthUnit.KILOMETER)>distanzaMax) {
+								troppoDistante = true;
+							}
+						}
+						if(!troppoDistante) {
+							if(tipiRestanti.size() != 0 && tipiRestanti.contains(a.getTipologia())) { 
+								parziale.addAttivita(a);
+								parziale.addCosto(a.getPrezzo());
+								List<String> restanti = new ArrayList<String>(tipiRestanti);
+								restanti.remove(a.getTipologia());
+								cerca(b, parziale, attivita, comune, restanti);
+								parziale.removeAttivita(a);
+								parziale.removeCosto(a.getPrezzo());
+							}
+							else if(tipiRestanti.size() == 0) {
+								parziale.addAttivita(a);
+								parziale.addCosto(a.getPrezzo());
+								List<String> restanti = new ArrayList<String>(tipoAttivita);
+								restanti.remove(a.getTipologia());
+								cerca(b, parziale, attivita, comune, restanti);
+								parziale.removeAttivita(a);
+								parziale.removeCosto(a.getPrezzo());
+							}
+							else {
+								boolean trovato = false;
+								List<Attivita> temp = new ArrayList<>(attivita);
+								temp.removeAll(parziale.getAttivita());
+								for(Attivita a1 : temp) {
+									if(tipiRestanti.contains(a1.getTipologia()) // esiste un'attivita 'a1' che ha una tipologia che ha la priorita' rispetto alla tipologia dell'attivita attuale 'a', e che rispetta tutti i vincoli per l'entrare all'interno del percorso
+											&& (parziale.getCosto() + a1.getPrezzo()) <= spesaMax
+											&& parziale.getAttivita().get(parziale.getAttivita().size()-1).getOrdine() < a1.getOrdine() ) {
+										boolean troppoDistante2 = false;
+										for(Attivita a2 : parziale.getAttivita()) {
+											if(LatLngTool.distance(a1.getCoordinate(), a2.getCoordinate(), LengthUnit.KILOMETER)>distanzaMax) {
+												troppoDistante2 = true;
+											}
+										}
+										if(!troppoDistante2) {
+											trovato = true;
+										}
+									}
+								}
+								if(!trovato) {
+									parziale.addAttivita(a);
+									parziale.addCosto(a.getPrezzo());
+									List<String> restanti = new ArrayList<String>(tipoAttivita);
+									restanti.remove(a.getTipologia());
+									cerca(b, parziale, attivita, comune, restanti);
+									parziale.removeAttivita(a);
+									parziale.removeCosto(a.getPrezzo());
+								}
 							}
 						}
 					}

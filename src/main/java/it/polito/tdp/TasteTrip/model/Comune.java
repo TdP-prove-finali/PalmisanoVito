@@ -62,11 +62,13 @@ public class Comune {
 	public void addListaAttivita(List<Attivita> listaAttivita) {
 		this.listaAttivita.addAll(listaAttivita);
 	}
-
+	
+	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((nome == null) ? 0 : nome.hashCode());
+		result = prime * result + ((provincia == null) ? 0 : provincia.hashCode());
 		return result;
 	}
 
@@ -83,6 +85,11 @@ public class Comune {
 			if (other.nome != null)
 				return false;
 		} else if (!nome.equals(other.nome))
+			return false;
+		if (provincia == null) {
+			if (other.provincia != null)
+				return false;
+		} else if (!provincia.equals(other.provincia))
 			return false;
 		return true;
 	}

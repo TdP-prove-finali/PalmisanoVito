@@ -60,6 +60,7 @@ public class Attivita {
 		this.ordine = ordine;
 	}
 
+	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
@@ -68,13 +69,15 @@ public class Attivita {
 		result = prime * result + ((coordinate == null) ? 0 : coordinate.hashCode());
 		result = prime * result + ((indirizzo == null) ? 0 : indirizzo.hashCode());
 		result = prime * result + ((nome == null) ? 0 : nome.hashCode());
+		result = prime * result + ordine;
 		long temp;
 		temp = Double.doubleToLongBits(prezzo);
 		result = prime * result + (int) (temp ^ (temp >>> 32));
 		result = prime * result + ((tipologia == null) ? 0 : tipologia.hashCode());
 		return result;
 	}
-	
+
+	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
@@ -105,6 +108,8 @@ public class Attivita {
 				return false;
 		} else if (!nome.equals(other.nome))
 			return false;
+		if (ordine != other.ordine)
+			return false;
 		if (Double.doubleToLongBits(prezzo) != Double.doubleToLongBits(other.prezzo))
 			return false;
 		if (tipologia == null) {
@@ -116,7 +121,7 @@ public class Attivita {
 	}
 
 	public String toString() {
-		return nome + ", " + tipologia + ", " + comune + ", costo: " + String.format("%.2f €", prezzo);
+		return nome + ", " + tipologia + ", " + comune + ", " + indirizzo + ", costo: " + String.format("%.2f €", prezzo);
 	}
 	
 	
