@@ -115,7 +115,7 @@ public class TasteTripDAO {
 		return listaBeb;
 	}
 	
-	// ----- Metodi per la selezione delle varie attivita' -----
+	// ----- Metodi per la selezione delle varie attivita' ----- 
 	
 	public List<Attivita> getAttivitaTuristicheComuni(Comune comune, String tipologia, int numPersone){ // Ricevo la lista di comuni che è possibile visitare a partire dal nodo scelto e la lista di tipologie di attivita' scelte dall'utente
 		

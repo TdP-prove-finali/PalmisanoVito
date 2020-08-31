@@ -141,7 +141,7 @@ public class Percorso {
 			s = "Purtroppo, con le scelte effettuate, non e' possibile trovare nessun itinerario di viaggio.";
 			esiste = false;
 		}
-		else if(beb == null && comune == null && !attivita.isEmpty()) { // Caso in cui scelgo la provincia, ma non il comune
+		else if(beb == null && comune == null && !attivita.isEmpty()) { // Caso in cui scelgo la provincia, ma non il comune 
 			s = "Sull'ampio territorio da te selezionato, potrai eseguire le seguenti fantastiche attivita': ";
 		}
 		else {

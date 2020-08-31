@@ -52,7 +52,7 @@ public class TestModel {
     	
 //    	model.creaGrafo();
     	
-    	// ----- Cerco il viaggio più confortevole e 'lussuoso', rispettando i vincoli dell'utente -----
+    	// ----- Cerco il viaggio più confortevole e 'lussuoso', rispettando i vincoli dell'utente ----- 
     	
     	Percorso bestPercorso = model.ricorsione(c);
     	

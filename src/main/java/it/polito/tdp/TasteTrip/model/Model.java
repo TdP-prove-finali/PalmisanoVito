@@ -244,7 +244,7 @@ public class Model {
 			for(Attivita a : attivita) {
 				if( (parziale.getCosto() + a.getPrezzo()) <= spesaMax ) {
 					if(parziale.getAttivita().size()==0) {
-						// Verifico che la nuova attivita' non sia troppo distante dal B&B attuale
+						// Verifico che la nuova attivita' non sia troppo distante dal B&B attuale 
 						if(LatLngTool.distance(b.getCoordinate(), a.getCoordinate(), LengthUnit.KILOMETER)<distanzaMax) {
 							parziale.addAttivita(a);
 							parziale.addCosto(a.getPrezzo());

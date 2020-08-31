@@ -346,7 +346,7 @@ public class FXMLController {
 	    	
 	    	txtResult.setText("Selezionare la provincia che si vorrebbe visitare ed almeno una delle attivita' disponibili.\n"
 					+ "Il campo comune puo' essere lasciato deselezionato se non si vuole scendere cosi' nello specifico.\n"
-					+ "Tutti gli altri campi vanno invece riempiti obbligatoriamente secondo le proprie esigenze.");;
+					+ "Tutti gli altri campi vanno invece riempiti obbligatoriamente secondo le proprie esigenze.");
 	    }
 
 	    @FXML

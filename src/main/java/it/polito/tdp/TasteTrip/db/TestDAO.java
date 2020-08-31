@@ -29,7 +29,7 @@ public class TestDAO {
 		TasteTripDAO dao = new TasteTripDAO();
 
 //		for(String s : dao.loadAllBeB())
-//			System.out.println(s);
+//			System.out.println(s); 
 		
 		List<Comune> comuni = dao.getCommuniByProvincia("BR");
 		for(Comune c : comuni) {
