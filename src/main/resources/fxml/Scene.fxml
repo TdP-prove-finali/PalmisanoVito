@@ -8,131 +8,157 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="800.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polito.tdp.TasteTrip.FXMLController">
+<BorderPane prefHeight="690.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polito.tdp.TasteTrip.FXMLController">
    <center>
-      <VBox prefHeight="580.0" prefWidth="574.0" BorderPane.alignment="CENTER">
+      <VBox BorderPane.alignment="CENTER">
          <children>
-            <GridPane prefWidth="578.0">
-              <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="80.0" />
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="-Infinity" />
-                  <ColumnConstraints />
-              </columnConstraints>
-              <rowConstraints>
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-              </rowConstraints>
+            <HBox alignment="TOP_CENTER">
                <children>
-                  <Label text="Selezionare la provincia:">
-                     <GridPane.margin>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                     </GridPane.margin>
+                  <Label text="Applicazione per il turismo della regione Puglia">
+                     <font>
+                        <Font name="System Italic" size="12.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets bottom="5.0" />
+                     </HBox.margin>
                   </Label>
-                  <ComboBox fx:id="cmbProvincia" onAction="#riempiComuni" prefWidth="160.0" GridPane.columnIndex="1" GridPane.columnSpan="2">
-                     <GridPane.margin>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                     </GridPane.margin>
-                  </ComboBox>
-                  <Label text="Selezionare, se lo si desidera, un comune:" GridPane.rowIndex="1">
-                     <GridPane.margin>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                     </GridPane.margin>
-                  </Label>
-                  <ComboBox fx:id="cmbComune" prefWidth="160.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                     <GridPane.margin>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                     </GridPane.margin>
-                  </ComboBox>
                </children>
-               <VBox.margin>
-                  <Insets top="10.0" />
-               </VBox.margin>
-            </GridPane>
-            <Label text="Selezionare le tipologie di attivita' che si vorrebbero svolgere:">
-               <VBox.margin>
-                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-               </VBox.margin>
-            </Label>
-            <GridPane>
-              <columnConstraints>
-                <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-              </columnConstraints>
-              <rowConstraints>
-                <RowConstraints vgrow="SOMETIMES" />
-                  <RowConstraints vgrow="SOMETIMES" />
-                  <RowConstraints vgrow="SOMETIMES" />
-                  <RowConstraints vgrow="SOMETIMES" />
-                  <RowConstraints vgrow="SOMETIMES" />
-              </rowConstraints>
+            </HBox>
+            <HBox>
                <children>
-                  <CheckBox fx:id="ckCitta" mnemonicParsing="false" text="Alla scoperta della citta'">
-                     <GridPane.margin>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                     </GridPane.margin>
-                  </CheckBox>
-                  <CheckBox fx:id="ckFormazione" mnemonicParsing="false" text="Attivita' di formazione" GridPane.columnIndex="1">
-                     <GridPane.margin>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                     </GridPane.margin>
-                  </CheckBox>
-                  <CheckBox fx:id="ckNatura" mnemonicParsing="false" text="Luoghi d’interesse naturale" GridPane.rowIndex="1">
-                     <GridPane.margin>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                     </GridPane.margin>
-                  </CheckBox>
-                  <CheckBox fx:id="ckStoria" mnemonicParsing="false" text="Luoghi di interesse architettonico e storico" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                     <GridPane.margin>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                     </GridPane.margin>
-                  </CheckBox>
-                  <CheckBox fx:id="ckMusei" mnemonicParsing="false" text="Musei" GridPane.rowIndex="2">
-                     <GridPane.margin>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                     </GridPane.margin>
-                  </CheckBox>
-                  <CheckBox fx:id="ckCulto" mnemonicParsing="false" text="Luoghi di culto" GridPane.columnIndex="1" GridPane.rowIndex="2">
-                     <GridPane.margin>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                     </GridPane.margin>
-                  </CheckBox>
-                  <CheckBox fx:id="ckSport" mnemonicParsing="false" text="Attivita' sportiva" GridPane.rowIndex="3">
-                     <GridPane.margin>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                     </GridPane.margin>
-                  </CheckBox>
-                  <CheckBox fx:id="ckLocMare" mnemonicParsing="false" text="Localita' marittime" GridPane.columnIndex="1" GridPane.rowIndex="3">
-                     <GridPane.margin>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                     </GridPane.margin>
-                  </CheckBox>
-                  <CheckBox fx:id="ckLido" layoutX="227.0" layoutY="133.0" mnemonicParsing="false" text="Stabilimenti balneari" GridPane.rowIndex="4">
-                     <GridPane.margin>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                     </GridPane.margin>
-                  </CheckBox>
+                  <VBox>
+                     <children>
+                        <Label text="Selezionare la provincia:">
+                           <VBox.margin>
+                              <Insets left="20.0" right="10.0" />
+                           </VBox.margin>
+                        </Label>
+                        <ComboBox fx:id="cmbProvincia" onAction="#riempiComuni" prefWidth="160.0">
+                           <VBox.margin>
+                              <Insets left="20.0" right="10.0" top="5.0" />
+                           </VBox.margin>
+                        </ComboBox>
+                        <Label text="Selezionare, se lo si desidera, un comune:">
+                           <VBox.margin>
+                              <Insets left="20.0" right="10.0" top="10.0" />
+                           </VBox.margin>
+                        </Label>
+                        <ComboBox fx:id="cmbComune" prefWidth="160.0">
+                           <VBox.margin>
+                              <Insets bottom="5.0" left="20.0" right="10.0" top="5.0" />
+                           </VBox.margin>
+                        </ComboBox>
+                        <Region VBox.vgrow="ALWAYS" />
+                        <Label text="Selezionare le tipologie di attivita' che si vorrebbero svolgere:">
+                           <VBox.margin>
+                              <Insets bottom="5.0" left="20.0" right="10.0" top="10.0" />
+                           </VBox.margin>
+                        </Label>
+                     </children>
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
+                  </VBox>
+                  <Region HBox.hgrow="ALWAYS" />
+                  <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" visible="true">
+                     <image>
+                        <Image url="file:/D:/File/Documenti/Eclipse%20TdP/TasteTrip/src/main/resources/fxml/TasteTrip.png" />
+                     </image>
+                     <HBox.margin>
+                        <Insets right="20.0" />
+                     </HBox.margin>
+                  </ImageView>
                </children>
-               <VBox.margin>
-                  <Insets left="10.0" right="10.0" />
-               </VBox.margin>
-            </GridPane>
+            </HBox>
+            <HBox>
+               <children>
+                  <GridPane>
+                    <columnConstraints>
+                      <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
+                      <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints vgrow="SOMETIMES" />
+                        <RowConstraints vgrow="SOMETIMES" />
+                        <RowConstraints vgrow="SOMETIMES" />
+                        <RowConstraints vgrow="SOMETIMES" />
+                        <RowConstraints vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                        <CheckBox fx:id="ckCitta" mnemonicParsing="false" text="Alla scoperta della citta'">
+                           <GridPane.margin>
+                              <Insets bottom="5.0" left="10.0" right="5.0" top="5.0" />
+                           </GridPane.margin>
+                        </CheckBox>
+                        <CheckBox fx:id="ckFormazione" mnemonicParsing="false" text="Attivita' di formazione" GridPane.columnIndex="1">
+                           <GridPane.margin>
+                              <Insets bottom="5.0" left="10.0" right="5.0" top="5.0" />
+                           </GridPane.margin>
+                        </CheckBox>
+                        <CheckBox fx:id="ckNatura" mnemonicParsing="false" text="Luoghi d’interesse naturale" GridPane.rowIndex="1">
+                           <GridPane.margin>
+                              <Insets bottom="5.0" left="10.0" right="5.0" top="5.0" />
+                           </GridPane.margin>
+                        </CheckBox>
+                        <CheckBox fx:id="ckStoria" mnemonicParsing="false" text="Luoghi di interesse architettonico e storico" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                           <GridPane.margin>
+                              <Insets bottom="5.0" left="10.0" right="5.0" top="5.0" />
+                           </GridPane.margin>
+                        </CheckBox>
+                        <CheckBox fx:id="ckMusei" mnemonicParsing="false" text="Musei" GridPane.rowIndex="2">
+                           <GridPane.margin>
+                              <Insets bottom="5.0" left="10.0" right="5.0" top="5.0" />
+                           </GridPane.margin>
+                        </CheckBox>
+                        <CheckBox fx:id="ckCulto" mnemonicParsing="false" text="Luoghi di culto" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                           <GridPane.margin>
+                              <Insets bottom="5.0" left="10.0" right="5.0" top="5.0" />
+                           </GridPane.margin>
+                        </CheckBox>
+                        <CheckBox fx:id="ckSport" mnemonicParsing="false" text="Attivita' sportiva" GridPane.rowIndex="3">
+                           <GridPane.margin>
+                              <Insets bottom="5.0" left="10.0" right="5.0" top="5.0" />
+                           </GridPane.margin>
+                        </CheckBox>
+                        <CheckBox fx:id="ckLocMare" mnemonicParsing="false" text="Localita' marittime" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                           <GridPane.margin>
+                              <Insets bottom="5.0" left="10.0" right="5.0" top="5.0" />
+                           </GridPane.margin>
+                        </CheckBox>
+                        <CheckBox fx:id="ckLido" layoutX="227.0" layoutY="133.0" mnemonicParsing="false" text="Stabilimenti balneari" GridPane.rowIndex="4">
+                           <GridPane.margin>
+                              <Insets bottom="5.0" left="10.0" right="5.0" top="5.0" />
+                           </GridPane.margin>
+                        </CheckBox>
+                     </children>
+                     <HBox.margin>
+                        <Insets bottom="5.0" left="20.0" />
+                     </HBox.margin>
+                  </GridPane>
+                  <Region HBox.hgrow="ALWAYS" />
+               </children>
+            </HBox>
             <Label text="Selezionare il periodo in cui si vorrebbe effettuare la propria vacanza:">
                <VBox.margin>
-                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                  <Insets left="20.0" right="10.0" top="10.0" />
                </VBox.margin>
             </Label>
             <HBox>
                <children>
                   <Label text="Andata">
                      <HBox.margin>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                        <Insets bottom="10.0" left="20.0" right="10.0" top="10.0" />
                      </HBox.margin></Label>
                   <DatePicker fx:id="dpkAndata" editable="false" promptText="gg/mm/aaaa">
                      <HBox.margin>
@@ -145,79 +171,97 @@
                      </HBox.margin></Label>
                   <DatePicker fx:id="dpkRitorno" editable="false" promptText="gg/mm/aaaa">
                      <HBox.margin>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                        <Insets bottom="10.0" left="10.0" right="20.0" top="10.0" />
                      </HBox.margin>
                   </DatePicker>
                </children>
             </HBox>
             <GridPane>
               <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="280.0" />
+                <ColumnConstraints hgrow="SOMETIMES" />
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
                   <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
               </columnConstraints>
               <rowConstraints>
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <TextField fx:id="txtBudget" GridPane.columnIndex="1">
+                  <TextField fx:id="txtBudget" alignment="CENTER_RIGHT" GridPane.columnIndex="1">
                      <GridPane.margin>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                        <Insets bottom="2.0" left="10.0" right="2.0" top="2.0" />
                      </GridPane.margin>
                   </TextField>
-                  <TextField fx:id="txtDistanzaMax" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                  <TextField fx:id="txtDistanzaMax" alignment="CENTER_RIGHT" GridPane.columnIndex="1" GridPane.rowIndex="1">
                      <GridPane.margin>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                        <Insets bottom="2.0" left="10.0" right="2.0" top="2.0" />
                      </GridPane.margin>
                   </TextField>
                   <Label text="Distanza massima che si e' disposti a percorrere:" GridPane.rowIndex="1">
                      <GridPane.margin>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                        <Insets bottom="2.0" right="2.0" top="2.0" />
                      </GridPane.margin>
                   </Label>
                   <Label text="Spesa massima che si e' disposti a sostenere:">
                      <GridPane.margin>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                        <Insets bottom="2.0" right="2.0" top="2.0" />
                      </GridPane.margin>
                   </Label>
-                  <Label text="€" GridPane.columnIndex="2" />
-                  <Label text="Km" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                  <Label text="€" GridPane.columnIndex="2">
+                     <GridPane.margin>
+                        <Insets left="2.0" />
+                     </GridPane.margin></Label>
+                  <Label text="Km" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                     <GridPane.margin>
+                        <Insets left="2.0" />
+                     </GridPane.margin></Label>
                   <Label text="Numero di viaggiatori:" GridPane.rowIndex="2">
                      <GridPane.margin>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                        <Insets bottom="2.0" right="2.0" top="2.0" />
                      </GridPane.margin>
                   </Label>
-                  <TextField fx:id="txtNumPersone" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                  <TextField fx:id="txtNumPersone" alignment="CENTER_RIGHT" GridPane.columnIndex="1" GridPane.rowIndex="2">
                      <GridPane.margin>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                        <Insets bottom="2.0" left="10.0" right="2.0" top="2.0" />
                      </GridPane.margin>
                   </TextField>
                </children>
                <VBox.margin>
-                  <Insets />
+                  <Insets left="20.0" />
                </VBox.margin>
             </GridPane>
             <HBox alignment="TOP_RIGHT">
                <children>
                   <Button fx:id="btnReset" mnemonicParsing="false" onAction="#doReset" text="Reset">
                      <HBox.margin>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                        <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                      </HBox.margin>
                   </Button>
                   <Button fx:id="btnCalcola" mnemonicParsing="false" onAction="#doCalcolo" text="Calcola itinerario">
                      <HBox.margin>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                        <Insets bottom="5.0" left="10.0" right="20.0" top="5.0" />
                      </HBox.margin>
                   </Button>
                </children>
             </HBox>
-            <TextArea fx:id="txtResult" editable="false">
+            <TextArea fx:id="txtResult" editable="false" minHeight="120.0">
                <VBox.margin>
-                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-               </VBox.margin></TextArea>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="5.0" />
+               </VBox.margin>
+            </TextArea>
+            <Region VBox.vgrow="ALWAYS" />
          </children>
       </VBox>
    </center>
+   <top>
+      <Label text="TasteTrip" BorderPane.alignment="CENTER">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+         <BorderPane.margin>
+            <Insets left="10.0" right="10.0" top="10.0" />
+         </BorderPane.margin>
+      </Label>
+   </top>
 </BorderPane>

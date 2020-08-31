@@ -38,7 +38,9 @@ public class TasteTripDAO {
 					}
 				}
 				if(!esistente) {
-					comuni.add(new Comune(res.getString("nome"), res.getString("provincia"), res.getString("nomeProvincia"), new LatLng(res.getDouble("lat"), res.getDouble("lng")), res.getInt("cap")));
+					comuni.add(new Comune(res.getString("nome"), res.getString("provincia"), 
+							res.getString("nomeProvincia"), new LatLng(res.getDouble("lat"), 
+							res.getDouble("lng")), res.getInt("cap")));
 				}
 			}
 
@@ -85,20 +87,23 @@ public class TasteTripDAO {
 	
 	// ----- Metodi per la selezione dei B&B -----
 	
-	public List<BeB> getBeBComune(Comune comune, int numNotti, int numPersone) {
+	public List<BeB> getBeBComune(Comune comune, long numNotti, int numPersone) {
 
-		String sql = "SELECT `name`, host_name, neighbourhood, room_type, latitude, longitude, price FROM beb WHERE minimum_nights<=? AND neighbourhood=?";
+		String sql = "SELECT `name`, host_name, neighbourhood, room_type, latitude,"
+				+ " longitude, price FROM beb WHERE minimum_nights<=? AND neighbourhood=?";
 		List<BeB> listaBeb = new ArrayList<>();
 
 		try {
 			Connection conn = DBConnect.getConnection();
 			PreparedStatement st = conn.prepareStatement(sql);
-			st.setInt(1, numNotti);
+			st.setLong(1, numNotti);
 			st.setString(2, comune.getNome());
 			ResultSet res = st.executeQuery();
 
 			while (res.next()) {
-				listaBeb.add(new BeB(res.getString("name"), res.getString("host_name"), comune, res.getString("room_type"), new LatLng( res.getDouble("latitude"), res.getDouble("longitude") ), res.getDouble("price")*numPersone));
+				listaBeb.add(new BeB(res.getString("name"), res.getString("host_name"),
+						comune, res.getString("room_type"), new LatLng( res.getDouble("latitude"),
+						res.getDouble("longitude") ), res.getDouble("price")*numPersone));
 			}
 
 			conn.close();
@@ -116,7 +121,8 @@ public class TasteTripDAO {
 		
 		List<Attivita> attivita = new ArrayList<Attivita>();
 		
-		String sql = "SELECT nome, tipologia, comune, indirizzo, cap, latitudine, longitudine, prezzoIntero FROM attivita_turistiche WHERE comune = ? AND tipologia = ?";
+		String sql = "SELECT nome, tipologia, comune, indirizzo, cap, latitudine, longitudine, "
+				+ "prezzo FROM attivita_turistiche WHERE comune = ? AND tipologia = ?";
 		
 		try {
 			Connection conn = DBConnect.getConnection();
@@ -125,7 +131,10 @@ public class TasteTripDAO {
 			st.setString(2, tipologia);
 			ResultSet res = st.executeQuery();
 			while (res.next()) {
-				attivita.add(new Attivita(res.getString("nome"), tipologia, comune, res.getString("indirizzo"), res.getInt("cap"), new LatLng(res.getDouble("latitudine"), res.getDouble("longitudine")), res.getDouble("prezzoIntero")*numPersone));
+				attivita.add(new Attivita(res.getString("nome"), tipologia, comune, 
+						res.getString("indirizzo"), res.getInt("cap"), 
+						new LatLng(res.getDouble("latitudine"), res.getDouble("longitudine")), 
+						res.getDouble("prezzo")*numPersone));
 			}
 
 			conn.close();
@@ -209,6 +218,4 @@ public class TasteTripDAO {
 		
 		return attivita;
 	}
-
-	
 }

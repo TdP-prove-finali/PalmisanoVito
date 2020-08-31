@@ -2,7 +2,7 @@ package it.polito.tdp.TasteTrip;
 
 import java.net.URL;
 import java.time.LocalDate;
-import java.time.Period;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -163,7 +163,7 @@ public class FXMLController {
 	    		return;
 	    	}
 	    	
-	    	int numGiorni = Period.between(andata, ritorno).getDays()+1;
+	    	long numGiorni = ChronoUnit.DAYS.between(andata, ritorno)+1;
 	    	
 	    	int numPersone;
 	    	double spesaMax;
@@ -235,7 +235,7 @@ public class FXMLController {
 	    	
 	    	// ----- Seleziono i B&B idonei -----
 	    	
-	    	model.addBeBComune();
+	    	model.addBeBComune(cmbComune.getValue());
 	    	
 	    	// ----- Raccolgo le scelte effettuate sulle attivita' -----
 	    	
@@ -344,7 +344,9 @@ public class FXMLController {
 	    	txtDistanzaMax.clear();
 	    	txtNumPersone.clear();
 	    	
-	    	txtResult.clear();
+	    	txtResult.setText("Selezionare la provincia che si vorrebbe visitare ed almeno una delle attivita' disponibili.\n"
+					+ "Il campo comune puo' essere lasciato deselezionato se non si vuole scendere cosi' nello specifico.\n"
+					+ "Tutti gli altri campi vanno invece riempiti obbligatoriamente secondo le proprie esigenze.");;
 	    }
 
 	    @FXML

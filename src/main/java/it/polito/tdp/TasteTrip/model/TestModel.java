@@ -11,23 +11,23 @@ public class TestModel {
     	
 		int numPersone = 2;
 		int distanzaMax = 10;
-		double spesaMax = 100;
+		double spesaMax = 400;
 		int numGiorni = 2;
 		
     	// ----- Seleziono i comuni in base alle scelte dell'utente -----
     	List<Comune> comuni = model.getCommuniByProvincia("BR");
     	
-    	Comune c = comuni.get(comuni.size()-1);
-//    	Comune c = null;
+//    	Comune c = comuni.get(comuni.size()-1);
+    	Comune c = null;
     	
     	model.setVariabiliUtente(numGiorni, numPersone, spesaMax, distanzaMax);
     	
-//    	model.addComuniBySelezioneProvincia("BT");
-    	model.addComuniBySelezioneSpecificaComune(c);
+    	model.addComuniBySelezioneProvincia("BT");
+//    	model.addComuniBySelezioneSpecificaComune(c);
     	
     	// ----- Seleziono i B&B idonei -----
     	
-    	model.addBeBComune();
+    	model.addBeBComune(c);
     	
     	// ----- Raccolgo le scelte effettuate sulle attivita' -----
     	

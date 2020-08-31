@@ -9,9 +9,9 @@ public class Percorso {
 	private BeB beb;
 	private List<Attivita> attivita;
 	private double costo;
-	private int numGiorni;
+	private long numGiorni;
 	
-	public Percorso(Comune comune, double costo, int numGiorni) {
+	public Percorso(Comune comune, double costo, long numGiorni) {
 		this.comune = comune;
 		this.costo = costo;
 		this.numGiorni = numGiorni;
@@ -71,14 +71,14 @@ public class Percorso {
 		this.costo -= costo;
 	}
 
-	public int getNumGiorni() {
+	public long getNumGiorni() {
 		return numGiorni;
 	}
 
-	public void setNumGiorni(int numGiorni) {
+	public void setNumGiorni(long numGiorni) {
 		this.numGiorni = numGiorni;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -89,7 +89,7 @@ public class Percorso {
 		long temp;
 		temp = Double.doubleToLongBits(costo);
 		result = prime * result + (int) (temp ^ (temp >>> 32));
-		result = prime * result + numGiorni;
+		result = prime * result + (int) (numGiorni ^ (numGiorni >>> 32));
 		return result;
 	}
 
@@ -127,6 +127,7 @@ public class Percorso {
 	@Override
 	public String toString() {
 		String s = "";
+		boolean esiste = true;
 		if(numGiorni<=1 && comune != null) {
 			s = "Visita i luighi del territorio in cui e' collocata la magnifica cittadina di "+ comune
 					+ ".\nNessun B&B selezionato, data la durata del viaggio di un solo giorno."
@@ -134,21 +135,25 @@ public class Percorso {
 		}
 		else if(comune != null && comune.getListaBeB().isEmpty() && numGiorni>1) {
 			s = "Purtroppo non e' stato trovato nessun B&B sul territorio del comune selezionato.";
+			esiste = false;
 		}
-		else if(comune != null && !comune.getListaBeB().isEmpty() && beb == null && attivita.isEmpty()) {
+		else if(beb == null && attivita.isEmpty()) {
 			s = "Purtroppo, con le scelte effettuate, non e' possibile trovare nessun itinerario di viaggio.";
+			esiste = false;
 		}
-		else if(beb == null && comune == null) { // Caso in cui scelgo la provincia, ma non il comune
+		else if(beb == null && comune == null && !attivita.isEmpty()) { // Caso in cui scelgo la provincia, ma non il comune
 			s = "Sull'ampio territorio da te selezionato, potrai eseguire le seguenti fantastiche attivita': ";
 		}
 		else {
 			s = "Soggiorna nella magnifica cittadina di "+ comune 
 					+ ".\n" + beb + "\nSul territorio potrai eseguire le seguenti attivita': ";
 		}
-		for(Attivita a : attivita) {
-			s += "\n"+a;
+		if(esiste) {
+			for(Attivita a : attivita) {
+				s += "\n"+a;
+			}
+			s += String.format("\nCosto totale: %.2f €", costo);
 		}
-		s += String.format("\nCosto totale: %.2f €", costo);
 		return s;
 	}
 
